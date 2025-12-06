@@ -1,20 +1,50 @@
+import React, { useContext } from 'react';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { AuthContext, AuthProvider } from './src/context/AuthContext';
+import { AppointmentsProvider } from './src/context/AppointmentsContext';
+import AppNavigator from './src/navigation/AppNavigator';
+import AuthNavigator from './src/navigation/AuthNavigator';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, ActivityIndicator, Text } from 'react-native';
+import COLORS from './src/constants/Colors';
 
-export default function App() {
+// Tema de Navegación Personalizado
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: COLORS.brandLight, // Fondo global
+  },
+};
+
+// Componente principal que decide qué navegador mostrar
+function AppContent() {
+  const { user, isLoading } = useContext(AuthContext);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.brandLight }}>
+        <ActivityIndicator size="large" color={COLORS.brandPink} />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer theme={MyTheme}>
+      {user ? <AppNavigator /> : <AuthNavigator />}
+      {/* <AppNavigator /> */}
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// Envolvemos todo en los Proveedores de Contexto
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppointmentsProvider>
+        <StatusBar style="dark" backgroundColor={COLORS.brandLight} />
+        <AppContent />
+      </AppointmentsProvider>
+    </AuthProvider>
+  );
+}

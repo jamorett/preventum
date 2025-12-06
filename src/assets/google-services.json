@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "927922432524",
+    "project_id": "preventum-41940",
+    "storage_bucket": "preventum-41940.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927922432524:android:f3ce5035129a0311071c29",
+        "android_client_info": {
+          "package_name": "preventum.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927922432524-ofa8ig2aqjl3itinei7h607kiq6l41vb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "preventum.android",
+            "certificate_hash": "6fc5457475ac4a760fef2335c6c0a64560eb20ba"
+          }
+        },
+        {
+          "client_id": "927922432524-n92mc3ib9jcp1e88ducfr1ggssu6lamh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLat7ISro6gUENaiymcRUax8JlFBiIY5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "927922432524-n92mc3ib9jcp1e88ducfr1ggssu6lamh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "927922432524-nj04jtha99scb8h34bsg1m087eomfk85.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "preventum.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

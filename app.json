@@ -4,26 +4,46 @@
     "slug": "miApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./src/assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./src/assets/GoogleService-Info.plist",
+      "bundleIdentifier": "preventum.ios"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "googleServicesFile": "./src/assets/google-services.json",
+      "package": "preventum.android",
+      "edgeToEdgeEnabled": true,
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "6fc5457475ac4a760fef2335c6c0a64560eb20ba"
+        },
+        "googleMaps": {
+          "apiKey": "AIzaSyB_hZm4Hm_upXzmOJFsXVVSc6uGXDiWS6c"
+        }
+      }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./src/assets/favicon.png"
+    },
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "62771739-c106-44f7-887d-ca1585fe2dd0"
+      }
     }
   }
 }
