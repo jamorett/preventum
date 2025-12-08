@@ -5,7 +5,11 @@ import { AuthContext } from '../context/AuthContext';
 import COLORS from '../constants/Colors';
 
 export default function ProfileScreen({ navigation }) {
-  const { logout } = useContext(AuthContext);
+  const { user, userData, logout } = useContext(AuthContext);
+
+  const displayName = userData?.name || user?.displayName || 'Usuario';
+  const email = user?.email || 'correo@ejemplo.com';
+  const photoURL = user?.photoURL || `https://placehold.co/150x150/FEF6F8/D45D8C?text=${displayName.charAt(0).toUpperCase()}`;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -15,15 +19,15 @@ export default function ProfileScreen({ navigation }) {
         <View style={styles.profileHeader}>
           <View style={styles.imageContainer}>
             <Image
-              source={{ uri: 'https://placehold.co/150x150/FEF6F8/D45D8C?text=U' }}
+              source={{ uri: photoURL }}
               style={styles.profileImage}
             />
             <TouchableOpacity style={styles.editImageButton}>
               <Ionicons name="camera" size={20} color={COLORS.white} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.profileName}>Nombre de Usuaria</Text>
-          <Text style={styles.profileEmail}>usuaria@ejemplo.com</Text>
+          <Text style={styles.profileName}>{displayName}</Text>
+          <Text style={styles.profileEmail}>{email}</Text>
         </View>
 
         <View style={styles.sectionContainer}>

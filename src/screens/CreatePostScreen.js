@@ -19,9 +19,9 @@ export default function CreatePostScreen({ navigation }) {
 
         setLoading(true);
         try {
-            const authorName = userData?.role === 'doctor'
-                ? `Dr. ${user.displayName || 'Usuario'}`
-                : (user.displayName || 'Usuario');
+            const authorName = userData?.role === 'doctor' && userData?.name
+                ? `Dr. ${userData.name}`
+                : userData?.name || user.displayName || 'Usuario';
 
             await addDoc(collection(db, 'posts'), {
                 userId: user.uid,
@@ -70,7 +70,7 @@ export default function CreatePostScreen({ navigation }) {
                             source={{ uri: user?.photoURL || 'https://via.placeholder.com/50' }}
                             style={styles.avatar}
                         />
-                        <Text style={styles.userName}>{user?.displayName || 'Doctor'}</Text>
+                        <Text style={styles.userName}>{userData?.name || user?.displayName || 'Doctor'}</Text>
                     </View>
 
                     <TextInput
