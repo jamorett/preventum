@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons'; // Para iconos
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login, googleLogin } = useContext(AuthContext); // Asumiendo que googleLogin existe en el contexto
+    const { login } = useContext(AuthContext);
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -18,14 +18,6 @@ export default function LoginScreen({ navigation }) {
             await login(email, password);
         } catch (error) {
             Alert.alert('Error de Inicio de Sesión', error.message);
-        }
-    };
-
-    const handleGoogleLogin = async () => {
-        try {
-            await googleLogin();
-        } catch (error) {
-            Alert.alert('Error de Google', error.message);
         }
     };
 
@@ -80,18 +72,6 @@ export default function LoginScreen({ navigation }) {
 
                         <TouchableOpacity style={styles.button} onPress={handleLogin}>
                             <Text style={styles.buttonText}>Iniciar Sesión</Text>
-                        </TouchableOpacity>
-
-                        <View style={styles.dividerContainer}>
-                            <View style={styles.dividerLine} />
-                            <Text style={styles.dividerText}>O continúa con</Text>
-                            <View style={styles.dividerLine} />
-                        </View>
-
-                        {/* Botón de Google */}
-                        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
-                            <Ionicons name="logo-google" size={24} color={COLORS.text} />
-                            <Text style={styles.googleButtonText}>Google</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -207,46 +187,6 @@ const styles = StyleSheet.create({
         color: COLORS.white,
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    dividerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 24,
-    },
-    dividerLine: {
-        flex: 1,
-        height: 1,
-        backgroundColor: COLORS.gray,
-        opacity: 0.3,
-    },
-    dividerText: {
-        marginHorizontal: 16,
-        color: COLORS.gray,
-        fontSize: 14,
-    },
-    googleButton: {
-        flexDirection: 'row',
-        backgroundColor: COLORS.white,
-        borderRadius: 12,
-        height: 56,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: COLORS.lightGray,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    googleButtonText: {
-        color: COLORS.text,
-        fontSize: 16,
-        fontWeight: '600',
-        marginLeft: 12,
     },
     footer: {
         flexDirection: 'row',
