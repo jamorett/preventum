@@ -62,9 +62,9 @@ export default function ManageAvailabilityScreen({ navigation }) {
 
         setLoading(true);
         try {
-            const doctorName = userData?.role === 'doctor'
-                ? `Dr. ${user.displayName || 'Usuario'}`
-                : (user.displayName || 'Doctor');
+            const doctorName = userData?.role === 'doctor' && userData?.name
+                ? `Dr. ${userData.name}`
+                : userData?.name || user.displayName || 'Doctor';
 
             await addDoc(collection(db, 'doctor_slots'), {
                 doctorId: user.uid,

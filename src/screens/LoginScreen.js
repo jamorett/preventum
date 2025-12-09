@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation }) {
                     {/* Header / Logo */}
                     <View style={styles.header}>
                         <Image
-                            source={require('../assets/icon.png')}
+                            source={require('../assets/preventumlogo.png')}
                             style={styles.logo}
                             resizeMode="contain"
                         />
@@ -44,6 +44,7 @@ export default function LoginScreen({ navigation }) {
                     <View style={styles.formContainer}>
                         <Text style={styles.welcomeText}>Bienvenido de nuevo</Text>
                         <Text style={styles.subText}>Ingresa a tu cuenta para continuar</Text>
+
 
                         <View style={styles.inputContainer}>
                             <Ionicons name="mail-outline" size={20} color={COLORS.brandDeep} style={styles.inputIcon} />
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         marginBottom: 16,
-        tintColor: COLORS.brandDeep, // Opcional: teñir el logo si es monocromático
+        // tintColor removed to show original logo colors
     },
     appName: {
         fontSize: 28,

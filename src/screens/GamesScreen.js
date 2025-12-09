@@ -34,6 +34,31 @@ const gameData = [
     question: 'MITO O REALIDAD: Los hombres también pueden tener cáncer de mama.',
     answer: 'REALIDAD',
     explanation: 'REALIDAD: Sí, aunque es raro (menos del 1% de todos los casos), los hombres pueden desarrollar cáncer de mama.'
+  },
+  {
+    question: 'MITO O REALIDAD: Los sostenes con varilla causan cáncer de mama.',
+    answer: 'MITO',
+    explanation: 'REALIDAD: No existe evidencia científica que vincule el tipo de ropa interior con el riesgo de cáncer de mama.'
+  },
+  {
+    question: 'MITO O REALIDAD: La actividad física regular reduce el riesgo.',
+    answer: 'REALIDAD',
+    explanation: 'REALIDAD: El ejercicio regular ayuda a mantener un peso saludable, lo cual reduce el riesgo de desarrollar cáncer de mama.'
+  },
+  {
+    question: 'MITO O REALIDAD: El consumo de alcohol aumenta el riesgo.',
+    answer: 'REALIDAD',
+    explanation: 'REALIDAD: El consumo regular de alcohol está claramente vinculado a un mayor riesgo de cáncer de mama.'
+  },
+  {
+    question: 'MITO O REALIDAD: El cáncer de mama es contagioso.',
+    answer: 'MITO',
+    explanation: 'REALIDAD: El cáncer de mama no es una enfermedad infecciosa y no se puede transmitir de persona a persona.'
+  },
+  {
+    question: 'MITO O REALIDAD: La lactancia materna puede reducir el riesgo.',
+    answer: 'REALIDAD',
+    explanation: 'REALIDAD: Amamantar durante un tiempo prolongado puede disminuir ligeramente el riesgo de desarrollar cáncer de mama.'
   }
 ];
 
