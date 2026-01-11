@@ -30,7 +30,7 @@
           "certificateHash": "6fc5457475ac4a760fef2335c6c0a64560eb20ba"
         },
         "googleMaps": {
-          "apiKey": "AIzaSyB_hZm4Hm_upXzmOJFsXVVSc6uGXDiWS6c"
+          "apiKey": "AIzaSyAHSaA7cHx61r216drhRTt0LtmyL15REg0"
         }
       }
     },
@@ -42,8 +42,14 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "62771739-c106-44f7-887d-ca1585fe2dd0"
+        "projectId": "6da92484-f940-4701-a102-80a949e7fcec"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6da92484-f940-4701-a102-80a949e7fcec"
     }
   }
 }
