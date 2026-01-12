@@ -1,35 +1,59 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Alert, Image, StatusBar, Platform } from 'react-native';
+import { 
+  ScrollView, 
+  StyleSheet, 
+  Text, 
+  View, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  Image, 
+  StatusBar, 
+  Platform,
+  Modal,
+  Dimensions
+} from 'react-native';
 import COLORS from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 
-// Datos del cuestionario
+const { width, height } = Dimensions.get('window');
+
+// PREGUNTAS
 const questions = [
   {
     id: 'q1',
-    text: '¿Realizas autoexámenes de mama mensuales?',
-    options: ['Sí, regularmente', 'A veces', 'No, nunca']
+    category: 'Visual',
+    text: 'Paso 1: Frente al espejo. ¿Notas cambios en la piel o en la forma de los senos?',
+    options: ['No, todo se ve normal', 'Sí, noto un cambio visual', 'No estoy segura']
   },
   {
     id: 'q2',
-    text: '¿Has notado algún bulto, cambio en la textura o secreción?',
-    options: ['Sí', 'No', 'No estoy segura']
+    category: 'Palpacion',
+    text: 'Paso 2: Al palpar en círculos. ¿Sientes algún bulto, bolita endurecida o zona muy distinta al resto?',
+    options: ['No, no siento nada extraño', 'Sí, siento algo', 'Siento dolor general']
   },
   {
     id: 'q3',
-    text: '¿Tienes antecedentes familiares directos (madre, hermana) de cáncer de mama?',
-    options: ['Sí', 'No', 'No lo sé']
+    category: 'Secrecion',
+    text: 'Paso 3: Al presionar suavemente el pezón. ¿Notas salida de fluidos?',
+    options: ['No', 'Sí, hay secreción']
   },
   {
     id: 'q4',
-    text: '¿Cuándo fue tu última mamografía o chequeo ginecológico? (Si aplica)',
-    options: ['Hace menos de 1 año', 'Hace 1-2 años', 'Hace más de 2 años', 'Nunca me he hecho una']
+    category: 'Frecuencia',
+    text: '¿Es este tu chequeo habitual del mes?',
+    options: ['Sí, cumplo mi rutina', 'No, hace mucho no lo hacía', 'Es mi primera vez']
   },
 ];
 
 export default function AssessmentScreen({ navigation }) {
-  // Estado para guardar las respuestas. Ej: {q1: 'Sí, regularmente', q2: 'No' }
   const [answers, setAnswers] = useState({});
+  
+  // Estado para el Modal de Resultados
+  const [modalVisible, setModalVisible] = useState(false);
+  const [resultData, setResultData] = useState({ title: '', message: '', icon: '', color: '', actionLabel: '' });
+
+  // NUEVO: Estado para el Zoom de la Imagen
+  const [imageZoomVisible, setImageZoomVisible] = useState(false);
 
   const handleSelectAnswer = (questionId, option) => {
     setAnswers(prev => ({
@@ -39,49 +63,101 @@ export default function AssessmentScreen({ navigation }) {
   };
 
   const handleSubmit = () => {
-    // Logic to analyze answers
-    let riskLevel = 'low';
-    let recommendation = '';
-
-    // Check for high risk answers
-    if (answers['q2'] === 'Sí' || answers['q3'] === 'Sí') {
-      riskLevel = 'high';
-    } else if (answers['q1'] === 'No, nunca' || answers['q4'] === 'Hace más de 2 años') {
-      riskLevel = 'medium';
+    if (!answers['q1'] || !answers['q2'] || !answers['q3']) {
+      setResultData({
+        title: "Falta poco",
+        message: "Por favor completa los 3 pasos para terminar tu registro de hoy.",
+        icon: "alert-circle-outline",
+        color: COLORS.gray,
+        actionLabel: "Continuar"
+      });
+      setModalVisible(true);
+      return;
     }
 
-    if (riskLevel === 'high') {
-      recommendation = "Basado en tus respuestas, recomendamos agendar una cita INMEDIATAMENTE. Por favor consulta con un especialista lo antes posible.";
-    } else if (riskLevel === 'medium') {
-      recommendation = "Deberías planear agendar una cita en el FUTURO CERCANO. Es importante mantenerte al tanto de tu salud.";
-    } else {
-      recommendation = "¡Parece que estás bien! Continúa con tus chequeos regulares y autoexámenes.";
+    let riskCategory = 'good'; 
+
+    if (answers['q1'] === 'Sí, noto un cambio visual' || 
+        answers['q2'] === 'Sí, siento algo' || 
+        answers['q3'] === 'Sí, hay secreción') {
+      riskCategory = 'attention';
+    } else if (answers['q1'] === 'No estoy segura' || answers['q4'] === 'Es mi primera vez') {
+      riskCategory = 'education';
+    } else if (answers['q4'] === 'No, hace mucho no lo hacía') {
+      riskCategory = 'reminder';
     }
 
-    Alert.alert(
-      "Resultado de la Evaluación",
-      recommendation,
-      [
-        { text: "Agendar Cita", onPress: () => navigation.navigate('Citas') },
-        { text: "OK" }
-      ]
-    );
+    let data = {};
+
+    switch (riskCategory) {
+      case 'attention':
+        data = {
+          title: "Estemos atentas",
+          message: "Has notado algo diferente hoy. ¡No te alarmes! El cuerpo tiene cambios naturales por hormonas o estrés. Lo importante es el monitoreo: \n\n1. Revisa si persiste en unos días. \n2. Mantente atenta a otros síntomas. \n3. Si tienes dudas, una visita preventiva al médico te dará tranquilidad.",
+          icon: "eye-outline",
+          color: "#FFB74D",
+          actionLabel: "Entendido, estaré pendiente"
+        };
+        break;
+      case 'education':
+        data = {
+          title: "Aprendiendo juntas",
+          message: "Conocer tu cuerpo toma tiempo. Es normal tener dudas al principio sobre qué es 'normal' y qué no. La constancia te hará experta en tu propia salud.",
+          icon: "book-outline",
+          color: "#5DADE2",
+          actionLabel: "Gracias"
+        };
+        break;
+      case 'reminder':
+        data = {
+          title: "Buen regreso",
+          message: "¡Qué bueno que retomaste el hábito! Intentar hacerlo siempre unos días después de tu periodo ayuda a que los resultados sean más precisos.",
+          icon: "calendar-outline",
+          color: "#AF7AC5",
+          actionLabel: "Listo"
+        };
+        break;
+      default:
+        data = {
+          title: "Todo en orden",
+          message: "¡Excelente! No encontraste anomalías hoy. Sigue así, la prevención es un acto de amor propio. Nos vemos el próximo mes.",
+          icon: "heart-circle-outline",
+          color: "#58D68D",
+          actionLabel: "Finalizar"
+        };
+    }
+
+    setResultData(data);
+    setModalVisible(true);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.brandLight} />
-      <ScrollView style={styles.pageContainer} contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
-        <Text style={styles.pageTitle}>Auto-Evaluación</Text>
+      <ScrollView style={styles.pageContainer} contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+        <Text style={styles.pageTitle}>Guía de Autoexamen</Text>
+        <Text style={styles.pageSubtitle}>Tómate un momento para ti y sigue los pasos.</Text>
 
-        {/* --- Imagen Real --- */}
-        <Image
-          source={require('../assets/guia_autoexamen.jpeg')}
-          style={styles.assessmentImage}
-        />
+        {/* --- IMAGEN CON ZOOM --- */}
+        <TouchableOpacity 
+          activeOpacity={0.9} 
+          onPress={() => setImageZoomVisible(true)}
+          style={styles.imageContainer}
+        >
+          <Image
+            source={require('../assets/guia_autoexamen.jpeg')}
+            style={styles.assessmentImage}
+          />
+          {/* Indicador de Zoom */}
+          <View style={styles.zoomIndicator}>
+            <Ionicons name="expand-outline" size={16} color="white" />
+            <Text style={styles.zoomText}>Toca para ampliar</Text>
+          </View>
+        </TouchableOpacity>
 
         {questions.map((q) => (
           <View key={q.id} style={styles.assessmentCard}>
+            <Text style={styles.categoryLabel}>{q.category.toUpperCase()}</Text>
             <Text style={styles.assessmentQuestion}>{q.text}</Text>
             <View style={styles.optionsContainer}>
               {q.options.map((option) => {
@@ -112,11 +188,89 @@ export default function AssessmentScreen({ navigation }) {
         ))}
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Enviar Evaluación</Text>
-          <Ionicons name="arrow-forward-circle-outline" size={24} color={COLORS.white} style={{ marginLeft: 8 }} />
+          <Text style={styles.submitButtonText}>Registrar Resultado</Text>
+          <Ionicons name="checkmark-done-circle-outline" size={24} color={COLORS.white} style={{ marginLeft: 8 }} />
         </TouchableOpacity>
 
       </ScrollView>
+
+      {/* --- MODAL 1: ZOOM DE IMAGEN --- */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={imageZoomVisible}
+        onRequestClose={() => setImageZoomVisible(false)}
+      >
+        <View style={styles.zoomModalOverlay}>
+          {/* Botón cerrar arriba a la derecha */}
+          <TouchableOpacity 
+            style={styles.zoomCloseButton} 
+            onPress={() => setImageZoomVisible(false)}
+          >
+            <Ionicons name="close-circle" size={40} color="white" />
+          </TouchableOpacity>
+
+          <View style={styles.zoomedImageContainer}>
+             <Image
+              source={require('../assets/guia_autoexamen.jpeg')}
+              style={styles.zoomedImage}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {/* --- MODAL 2: RESULTADOS (Assessment) --- */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            
+            <View style={[styles.iconContainer, { backgroundColor: resultData.color }]}>
+               <Ionicons name={resultData.icon} size={36} color="white" />
+            </View>
+
+            <Text style={styles.modalTitle}>{resultData.title}</Text>
+            
+            <Text style={styles.modalMessage}>
+              {resultData.message}
+            </Text>
+
+            <TouchableOpacity 
+              style={[styles.modalButton, { backgroundColor: resultData.color }]}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>{resultData.actionLabel}</Text>
+            </TouchableOpacity>
+
+            {resultData.title === "Estemos atentas" && (
+                <TouchableOpacity 
+                  style={styles.modalSecondaryButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate('NearbyCenters');
+                  }}
+                >
+                  <Text style={styles.modalSecondaryText}>Ver centros médicos cercanos</Text>
+                </TouchableOpacity>
+            )}
+
+            {resultData.title !== "Estemos atentas" && (
+                <TouchableOpacity 
+                style={styles.modalCloseButton}
+                onPress={() => setModalVisible(false)}
+                >
+                <Text style={styles.modalCloseText}>Cerrar</Text>
+                </TouchableOpacity>
+            )}
+
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -129,61 +283,126 @@ const styles = StyleSheet.create({
   },
   pageContainer: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
   pageTitle: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     color: COLORS.brandDeep,
-    marginBottom: 24,
     marginTop: 20,
     textAlign: 'center',
   },
+  pageSubtitle: {
+    fontSize: 14,
+    color: COLORS.gray,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  
+  // IMAGEN THUMBNAIL (Con indicador)
+  imageContainer: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    alignItems: 'center',
+    position: 'relative', // Necesario para el indicador
+  },
   assessmentImage: {
     width: '100%',
-    height: 250,
-    resizeMode: 'cover',
-    borderRadius: 20,
-    marginBottom: 24,
-    shadowColor: COLORS.brandDeep,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+    height: 300,
+    resizeMode: 'contain',
   },
+  zoomIndicator: {
+    position: 'absolute',
+    bottom: 15,
+    right: 15,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  zoomText: {
+    color: 'white',
+    fontSize: 12,
+    marginLeft: 6,
+    fontWeight: '600'
+  },
+
+  // ESTILOS MODAL ZOOM
+  zoomModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)', // Fondo oscuro casi total
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  zoomedImageContainer: {
+    width: '95%',
+    height: '80%',
+  },
+  zoomedImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain', // Importante para que no se corte
+  },
+  zoomCloseButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10, // Para que esté encima de la imagen si se solapan
+  },
+
+  // RESTO DE ESTILOS (Cuestionario)
   assessmentCard: {
     backgroundColor: COLORS.white,
     borderRadius: 20,
-    padding: 24,
+    padding: 20,
     marginBottom: 20,
     shadowColor: COLORS.brandDeep,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0'
+  },
+  categoryLabel: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: COLORS.brandPink,
+    marginBottom: 8,
+    letterSpacing: 1,
   },
   assessmentQuestion: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '700',
     color: COLORS.text,
-    marginBottom: 20,
-    lineHeight: 26,
+    marginBottom: 16,
+    lineHeight: 24,
   },
   optionsContainer: {
     flexDirection: 'column',
   },
   assessmentButton: {
-    backgroundColor: COLORS.white,
-    paddingVertical: 14,
+    backgroundColor: '#FAFAFA',
+    paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 10,
     borderWidth: 1,
-    borderColor: COLORS.lightGray,
+    borderColor: '#EEE',
     flexDirection: 'row',
     alignItems: 'center',
   },
   assessmentButtonActive: {
-    backgroundColor: COLORS.brandLight,
+    backgroundColor: '#FFF0F5',
     borderColor: COLORS.brandPink,
   },
   radioCircle: {
@@ -206,7 +425,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.brandPink,
   },
   assessmentButtonText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '500',
     color: COLORS.text,
     flex: 1,
@@ -218,11 +437,11 @@ const styles = StyleSheet.create({
   submitButton: {
     flexDirection: 'row',
     backgroundColor: COLORS.brandPink,
-    paddingVertical: 18,
-    borderRadius: 16,
+    paddingVertical: 16,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 10,
     marginBottom: 40,
     shadowColor: COLORS.brandPink,
     shadowOffset: { width: 0, height: 4 },
@@ -234,6 +453,83 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 18,
     fontWeight: 'bold',
-    letterSpacing: 1,
   },
+  // ESTILOS MODAL RESULTADOS
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)', 
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalContent: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 24,
+    padding: 24,
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  iconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    marginTop: -50, 
+    borderWidth: 4,
+    borderColor: 'white',
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.brandDeep,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  modalMessage: {
+    fontSize: 15,
+    color: '#555',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  modalButton: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalSecondaryButton: {
+    marginTop: 8,
+    paddingVertical: 10,
+  },
+  modalSecondaryText: {
+    color: COLORS.gray,
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+  modalCloseButton: {
+    paddingVertical: 10,
+  },
+  modalCloseText: {
+    color: COLORS.gray,
+    fontSize: 15,
+    fontWeight: '600'
+  }
 });

@@ -16,6 +16,9 @@ import CreatePostScreen from '../screens/CreatePostScreen';
 import ManageAvailabilityScreen from '../screens/ManageAvailabilityScreen';
 import COLORS from '../constants/Colors';
 
+// 1. IMPORTA LA PANTALLA DE MAPAS AQUI ⬅️
+import NearbyCentersScreen from '../screens/NearbyCentersScreen'; 
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -43,6 +46,28 @@ function UserTabs() {
             <Tab.Screen name="Juegos" component={GamesScreen} />
             <Tab.Screen name="Perfil" component={ProfileStackNavigator} />
         </Tab.Navigator>
+    );
+}
+
+// 2. CREAMOS UN GRUPO PRINCIPAL PARA EL USUARIO ⬅️
+// Este grupo contiene los Tabs + Pantallas sueltas como el Mapa
+function UserStackGroup() {
+    return (
+        <Stack.Navigator>
+            {/* Primero cargamos los Tabs (Feed, Evaluar, etc.) */}
+            <Stack.Screen 
+                name="MainTabs" 
+                component={UserTabs} 
+                options={{ headerShown: false }} 
+            />
+            
+            {/* Y aquí agregamos el Mapa para que esté disponible globalmente */}
+            <Stack.Screen 
+                name="NearbyCenters" 
+                component={NearbyCentersScreen} 
+                options={{ title: 'Centros Cercanos' }} 
+            />
+        </Stack.Navigator>
     );
 }
 
@@ -99,5 +124,7 @@ export default function AppNavigator() {
         }
     }
 
-    return userData.role === 'doctor' ? <DoctorTabs /> : <UserTabs />;
+    // 3. AQUÍ EL CAMBIO FINAL ⬅️
+    // En lugar de devolver <UserTabs />, devolvemos el nuevo <UserStackGroup />
+    return userData.role === 'doctor' ? <DoctorTabs /> : <UserStackGroup />;
 }
