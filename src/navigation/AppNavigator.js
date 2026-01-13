@@ -17,7 +17,8 @@ import ManageAvailabilityScreen from '../screens/ManageAvailabilityScreen';
 import COLORS from '../constants/Colors';
 
 // 1. IMPORTA LA PANTALLA DE MAPAS AQUI ⬅️
-import NearbyCentersScreen from '../screens/NearbyCentersScreen'; 
+import NearbyCentersScreen from '../screens/NearbyCentersScreen';
+import ChatbotScreen from '../screens/ChatbotScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -55,17 +56,22 @@ function UserStackGroup() {
     return (
         <Stack.Navigator>
             {/* Primero cargamos los Tabs (Feed, Evaluar, etc.) */}
-            <Stack.Screen 
-                name="MainTabs" 
-                component={UserTabs} 
-                options={{ headerShown: false }} 
+            <Stack.Screen
+                name="MainTabs"
+                component={UserTabs}
+                options={{ headerShown: false }}
             />
-            
+
             {/* Y aquí agregamos el Mapa para que esté disponible globalmente */}
-            <Stack.Screen 
-                name="NearbyCenters" 
-                component={NearbyCentersScreen} 
-                options={{ title: 'Centros Cercanos' }} 
+            <Stack.Screen
+                name="NearbyCenters"
+                component={NearbyCentersScreen}
+                options={{ title: 'Centros Cercanos' }}
+            />
+            <Stack.Screen
+                name="Chatbot"
+                component={ChatbotScreen}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     );
