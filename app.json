@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "miApp",
+    "slug": "miApp-Preventum",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./src/assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "googleServicesFile": "./src/assets/GoogleService-Info.plist",
+      "bundleIdentifier": "preventum.ios"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "googleServicesFile": "./src/assets/google-services.json",
+      "package": "preventum.android",
+      "edgeToEdgeEnabled": true,
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "6fc5457475ac4a760fef2335c6c0a64560eb20ba"
+        },
+        "googleMaps": {
+          "apiKey": "AIzaSyAHSaA7cHx61r216drhRTt0LtmyL15REg0"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/favicon.png"
+    },
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0837d766-787c-4dd8-80fc-47a65f9997cb"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0837d766-787c-4dd8-80fc-47a65f9997cb"
+    },
+    "owner": "jamorett"
+  }
+}

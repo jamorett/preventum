@@ -1,4 +1,4 @@
-const GROQ_API_KEY = process.env.EXPO_PUBLIC_GROQ_API_KEY;
+const GROQ_API_KEY = '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';
 
 /**
  * Sends a message to the Groq API.
